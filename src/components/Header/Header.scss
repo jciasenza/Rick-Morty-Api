@@ -1,0 +1,76 @@
+.app-header {
+  width: 100%;
+  background: rgba(7, 13, 24, 0.85);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* LOGO */
+.logo img {
+  max-width: 160px;
+  transition: transform 0.2s ease;
+}
+
+.logo:hover img {
+  transform: scale(1.05);
+}
+
+/* NAV */
+.nav {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  position: relative;
+  text-decoration: none;
+  color: #d8dde9;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+/* hover underline animado */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: #f5c518;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #fff;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .header-inner {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .nav {
+    gap: 12px;
+  }
+}

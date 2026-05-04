@@ -1,7 +1,10 @@
 import React from 'react'
-import { BsFacebook, BsTwitter, BsLinkedin, BsInstagram } from 'react-icons/bs'
+import { BsGithub, BsLinkedin, BsWhatsapp } from 'react-icons/bs'
+import { MdEmail } from 'react-icons/md'
 
 const Footer = () => {
+
+  const whatsapp = "+5491158094982";
   return (
     <footer className="site-footer">
       <div className="container">
@@ -12,15 +15,54 @@ const Footer = () => {
       </div>
       <div className="container">
         <div className="row">
+            <p className="copyright-text">
+              Design | Iasenza Juan Carlos
+            </p>
             <ul className="social-icons">
-              <li><a className="facebook" href="https://es-la.facebook.com/" target="_black"><i className="fa fa-facebook"><BsFacebook /></i></a></li>
-              <li><a className="twitter" href="https://twitter.com/?lang=es" target="_black"><i className="fa fa-twitter"><BsTwitter /></i></a></li>
-              <li><a className="dribbble" href="https://www.instagram.com/" target="_black"><i className="fa fa-dribbble"><BsInstagram /></i></a></li>
-              <li><a className="linkedin" href="https://ar.linkedin.com" target="_black"><i className="fa fa-linkedin"><BsLinkedin /></i></a></li>
+
+              <li>
+                <a
+                  className="whatsapp"
+                  href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <BsWhatsapp />
+                </a>
+              </li>
+              <li>
+                <a
+                  className="email"
+                  href="mailto:iasenzajuancarlos@gmail.com"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <MdEmail />
+                </a>
+              </li>
+              <li>
+                <a
+                  className="github"
+                  href="https://github.com/jciasenza"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <BsGithub />
+                </a>
+              </li>
+              <li>
+                <a
+                  className="linkedin"
+                  href="https://www.linkedin.com/in/juan-carlos-iasenza-8119501a9/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <BsLinkedin />
+                </a>
+              </li>
             </ul>
-            <p className="copyright-text">Derechos Reservados | QK-System™</p>
+          </div>
         </div>
-      </div>
     </footer>
   )
 };

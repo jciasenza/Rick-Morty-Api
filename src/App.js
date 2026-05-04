@@ -1,54 +1,127 @@
 import { useState } from "react";
-import "./App.scss"
-import { useFetch } from "./hooks/useFetch";
+import "./App.scss";
+import { useRickAndMorty } from "./hooks/useRickAndMorty";
+
 import Characters from "./components/Characters/Characters";
+import Episodes from "./components/Episodes/Episodes";
+import Locations from "./components/Locations/Locations";
+
 import { Container } from "react-bootstrap";
 import Loading from "./components/common/Loading";
-import Search from "./components/Search/Search"
-import Footer from "./components/Footer/Footer"
+import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
-import Pagination from "./components/Pagination/Pagination";
-import Modal from "./components/Modal/Modal"
+
+import Modal from "./components/Modal/Modal";
+import CharacterModal from "./components/Modal/CharacterModal";
+import EpisodeModal from "./components/Modal/EpisodeModal";
+import LocationModal from "./components/Modal/LocationModal";
+
+import { Routes, Route } from "react-router-dom";
 
 function App() {
- 
-  const [endpoint, setEndpoint] = useState("character");
-  const { data, loading, error } = useFetch(endpoint);
-  const { results: characters, info} = data;
-  const [estadoModal, cambiarEstadoModal] = useState(false);
-   
-  const findCharacters = (character) => {
-    setEndpoint (`character?name=${character}`)
-  }
+  // 🔥 modal único
+  const [modalType, setModalType] = useState(null);
+  const [modalData, setModalData] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
 
-  const findPage = (data) => {
-    setEndpoint(`${data}`)
-  }
+  const { getEpisode, getCharacter, getLocation } = useRickAndMorty();
 
-  if (loading) return <Loading />; 
-  if (error) return <h3>!!Ocurrió un ERROR !!!</h3>
+  // 🔥 abrir personaje directo
+  const openCharacterModal = (character) => {
+    setModalType("character");
+    setModalData(character);
+  };
 
-  const onPrevious = () => {
-    findPage(info.prev);
-  }
-  const onNext = () => {
-   findPage(info.next);
-  }
+  // 🔥 ir a episodio
+  const fetchEpisode = async (url) => {
+    setModalLoading(true);
 
-  return <Container className="App">
-    <Header />
-    <Pagination prev={info.prev} next={info.next} onPrevious={onPrevious} onNext={onNext}/>
-    <Search className="search" findCharacters={findCharacters}/>
-    <Characters characters={characters} />
-    <Pagination prev={info.prev} next={info.next} onPrevious={onPrevious} onNext={onNext} />
-   <Footer />
-    <Modal
-      estado={estadoModal}
-      cambiarEstado={cambiarEstadoModal}
-     >  
-      
-    </Modal>
-    </Container>;   
+    try {
+      const data = await getEpisode(url);
+      setModalData(data);
+      setModalType("episode"); // 👈 después
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const fetchLocation = async (url) => {
+    if (!url) return;
+
+    setModalLoading(true);
+    setModalType("location");
+
+    try {
+      const data = await getLocation(url);
+      setModalData(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  // 🔥 volver a personaje
+  const fetchCharacter = async (url) => {
+    setModalLoading(true);
+    setModalType("character");
+
+    const data = await getCharacter(url);
+    if (!data) return;
+
+    setModalData(data);
+    setModalLoading(false);
+  };
+
+  const closeModal = () => {
+    setModalType(null);
+    setModalData(null);
+    setModalLoading(false);
+  };
+
+  return (
+    <Container fluid className="App">
+      <Header setModalType={setModalType} setModalData={setModalData} />
+
+      <Routes>
+        <Route path="/" element={<Characters onOpen={openCharacterModal} />} />
+
+        <Route
+          path="/episodios"
+          element={<Episodes onOpen={(ep) => fetchEpisode(ep.url)} />}
+        />
+
+        <Route
+          path="/lugares"
+          element={<Locations onOpen={(loc) => fetchLocation(loc.url)} />}
+        />
+      </Routes>
+
+      <Footer />
+
+      {/* 🔥 MODAL ÚNICO */}
+      <Modal estado={!!modalType} cambiarEstado={closeModal}>
+        {modalLoading ? (
+          <Loading />
+        ) : modalType === "character" ? (
+          <CharacterModal
+            character={modalData}
+            onEpisodeClick={fetchEpisode}
+            onLocationClick={fetchLocation}
+          />
+        ) : modalType === "episode" ? (
+          <EpisodeModal episode={modalData} onCharacterClick={fetchCharacter} />
+        ) : modalType === "location" ? (
+          <LocationModal
+            location={modalData}
+            onCharacterClick={fetchCharacter}
+          />
+        ) : null}
+      </Modal>
+    </Container>
+  );
 }
 
 export default App;

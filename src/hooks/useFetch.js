@@ -6,8 +6,6 @@ import { fetchReducer, initialState } from "../reducers/fetch";
 export const useFetch = (endpoint) => {
       
     const [state, dispatch] = useReducer(fetchReducer, initialState);
-    // state = estado
-    // dispatch -> metodo -> mediante acciones actualicemos el reducer (state)
 
     const getData = useCallback (async () => {
         try {
@@ -16,7 +14,7 @@ export const useFetch = (endpoint) => {
  
         } catch (e) {  
             dispatch({ type: ACTIONS.SET_ERROR });
-            console.error(e); // KIBANA
+            console.error(e);
      }
     }, [endpoint]);
 
