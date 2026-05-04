@@ -23,8 +23,6 @@ const EpisodeModal = ({ episode, onCharacterClick }) => {
     let cancelled = false;
 
     const loadCharacters = async () => {
-      setCharactersData([]);
-
       const data = await getMultipleCharacters(episode.characters);
 
       if (!cancelled) {
@@ -32,12 +30,15 @@ const EpisodeModal = ({ episode, onCharacterClick }) => {
       }
     };
 
-    loadCharacters();
+    // 👇 evita refetch si ya hay data
+    if (charactersData.length === 0) {
+      loadCharacters();
+    }
 
     return () => {
       cancelled = true;
     };
-  }, [episode?.id]);
+  }, [episode?.id, getMultipleCharacters]);
 
   if (!episode) return null;
 
